@@ -12,11 +12,15 @@
 * 相關每日抓下來的原始資料在 files 資料夾裡面，我只加了一個 DATE 的欄位
 * 詳細每年的原始資料在 analytics 資料夾內，檔名格式是 raw_year_<年份>_data.csv.gz
 
-* 逾限次數統計總表（不分類別）在 analytics 資料夾內，檔名格式是 <年份>_year_overlimit.csv
+* 逾限次數年度統計總表（不分類別）在 analytics 資料夾內，檔名格式是 <年份>_year_overlimit.csv
+
 
 
 * 資料來源 http://cems.ilepb.gov.tw/opendata/
 * 資料若有誤，請以前述資料來源網址為準。
+
+
+* （溫馨提醒，原始資料檔因為太大了，excel 是打不開全部的喔。）
 
 
 
