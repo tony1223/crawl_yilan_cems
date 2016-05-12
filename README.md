@@ -14,6 +14,12 @@
 
 * 逾限次數統計總表（不分類別）在 analytics 資料夾內，檔名格式是 <年份>_year_overlimit.csv
 
+
+* 資料來源 http://cems.ilepb.gov.tw/opendata/
+* 資料若有誤，請以前述資料來源網址為準。
+
+
+
 * 以上 by TonyQ
 
 
