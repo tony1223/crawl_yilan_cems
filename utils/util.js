@@ -42,7 +42,10 @@ export function getAllChannels(places,channels){
   var allchannels = [];
 
   for(var placeNo in places){
-
+    if(channels[placeNo].forEach == null){
+      console.log("wrong channel:",channels[placeNo]);
+    }
+    // console.log(channels[placeNo].forEach == null,placeNo);
     channels[placeNo].forEach((channel,ind)=>{
       allchannels.push({place:placeNo,channel:channel.id});
     });

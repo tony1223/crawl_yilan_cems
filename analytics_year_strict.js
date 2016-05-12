@@ -54,7 +54,7 @@ import {
 import {
     reduceField,
     reduceFields,
-    toDailyOverLimitPOLs,
+    toDailyOverLimitItems,
     writeCSV
   } from "./utils/analytics";
 
@@ -97,7 +97,8 @@ function prase_day(body){
   return data;
 }
 
-var year = 2016;
+var year = parseInt(process.argv[3],10);
+
 var days = date_range(new Date(year+ "/1/1"),new Date((year+1)+"/1/1"));
 
 // days.forEach(function(){
@@ -106,9 +107,11 @@ var days = date_range(new Date(year+ "/1/1"),new Date((year+1)+"/1/1"));
 
 
 var channels = getAllChannels(pvplaces,reduceFields(pvchannels,"place"));
+var channelsMap = reduceFields(pvchannels,["place","id"],(m)=> m[0]);
+
 
 var items = [];
-//.filter((d,ind)=>{ return ind == 0;})
+
 days.forEach(function(day){
   console.log(day);
   channels.forEach(function(channel){
@@ -117,12 +120,39 @@ days.forEach(function(day){
   console.log(day+"end");
 });
 
+// items.push.apply(items,readData("G3200778","P301",new Date("2015/04/10"))); 
+
 // 'CNO','POLNO','DATE','TIME','ITEM','CODE2','VAL
 
-var reducedata = reduceFields(items,["DATE","CNO","POLNO"],(values)=>{
-  return values.filter((item)=> item.CODE2 == "逾限").length;
+var reducedata = reduceFields(items,["DATE","CNO","POLNO","ITEM"],(values)=>{
+
+  var overlimit = values.filter((item)=> {
+    var warn = channelsMap[item.CNO][item.POLNO].warning[item.ITEM];
+
+    if(warn){
+      return parseInt(item.VAL,10) >= warn.min;
+    }
+    return false;
+  }).length;
+
+  var overlimit_office = values.filter((item)=> {
+    return item.CODE2 == "逾限";
+  }).length;
+
+  
+  var overlimit_office2 = values.filter((item)=> {
+    var warn = channelsMap[item.CNO][item.POLNO].warning[item.ITEM];
+
+    if(warn){
+      return  item.CODE2 == "逾限" && parseInt(item.VAL,10) == warn.min;
+    } else{
+      return false;
+    }
+  }).length;  
+
+  return overlimit + "/" + overlimit_office+"/"+overlimit_office2;
 });
 
-var result = toDailyOverLimitPOLs(reducedata);
-writeCSV(year+"_year_overlimit.csv",result);
+var result = toDailyOverLimitItems(reducedata);
+writeCSV("analytics/"+year+"_year_overlimit_strict_items.csv",result);
 

@@ -50,7 +50,7 @@ export function writeCSV(filename,data,fields){
 
 }
 
-export function toDailyOverLimitItems(datamap){
+export function toDailyOverLimitPOLs(datamap){
   var channel_items = require("./../channel.json");
   var place_data = require("./../places.json");
 
@@ -66,9 +66,49 @@ export function toDailyOverLimitItems(datamap){
 
     channel_items.forEach(function(c){
       if(dateitems[c.place] && dateitems[c.place][c.id]){
-        place_output[place_data[c.place]+"-"+c.name +"違規"] = dateitems[c.place][c.id];
+        place_output[place_data[c.place]+ "-" + c.id +"-"+c.name +"違規"] = dateitems[c.place][c.id];
       }else{
-        place_output[place_data[c.place]+"-"+c.name +"違規"] = "";
+        place_output[place_data[c.place]+ "-" + c.id +"-"+c.name +"違規"] = "";
+      }
+    });
+
+    output.push(place_output);
+
+  }
+  return output;
+}
+
+
+export function toDailyOverLimitItems(datamap){
+  var channel_items = require("./../channel.json");
+  var place_data = require("./../places.json");
+  var envmap = require("./../envmap.json");
+
+
+  var output = [];
+  for(var date in datamap){ //date
+    var dateitems = datamap[date];
+
+    var place_output = {
+      //工廠:place_data[place],
+      日期:date
+    };
+
+    channel_items.forEach(function(c){
+
+      for(var item in c.warning){
+
+        var warn = c.warning[item];
+        var title = place_data[c.place] + "-" + c.id +" "+ c.name +
+          "-" + envmap[item].name + "("+  warn.min + envmap[item].unit +")-超標";
+
+        if(dateitems[c.place] && dateitems[c.place][c.id] 
+            && dateitems[c.place][c.id][item] ){
+
+          place_output[title] = dateitems[c.place][c.id][item];
+        }else{
+          place_output[title] = "";
+        }
       }
     });
 
